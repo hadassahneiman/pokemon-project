@@ -2,10 +2,10 @@ from flask import Flask, Response, request
 import requests
 import json
 
-from insert import add_pokemon, insert_type, insert_owner_pokemon, get_pokemon_id
+from insert import add_pokemon, insert_type, insert_owner_pokemon, get_pokemon_id, get_types
 from exe2_find_by_type import find_by_type
-from delete_pokemon_owner import delete_by_owner
-from update_pokemon_owner import update_pokemon_owner
+from delete_queries import delete_by_owner
+from update_queries import update_pokemon_owner
 from exe4_find_roster import find_roster
 
 
@@ -17,7 +17,21 @@ def welcome():
     return Response("Welcome to the Pokemon Game!!!")
 
 
-@app.route('/pokemon/<trainer>')
+@app.route('/pokemon_type/update/<pokemon_name>', methods=['PUT'])
+def update_types(pokemon_name):
+    pokemon_types = get_types(pokemon_name)
+    url = f'https://pokeapi.co/api/v2/pokemon/{pokemon_name}'
+    data = requests.get(url).json()
+    types = [type['type']['name'] for type in data['types']]
+
+    for type in types:
+        if type not in pokemon_types:
+           insert_type(get_pokemon_id(pokemon_name), type)
+
+    return Response(f"updated types for pokemon: {pokemon_name}")
+
+
+@app.route('/pokemon-by-trainer/<trainer>')
 def get_pokemon_by_trainer(trainer):
     pokemons = find_roster(trainer)
     return json.dumps({"trainer":trainer, "pokemons": pokemons})
@@ -38,7 +52,7 @@ def new_pokemon():
     return Response(f"added {pokemon['name']} to pokemon table")
 
 
-@app.route('/pokemon/<type>')
+@app.route('/pokemon-by-type/<type>')
 def get_pokemon_by_type(type):
     pokemons = find_by_type(type)
     return json.dumps({"found": pokemons})

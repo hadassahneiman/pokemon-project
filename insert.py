@@ -31,12 +31,12 @@ def is_owner(name):
         return True if result else False
 
 
-# def is_owner_pokemon(trainer, id):
-#     with connection.cursor() as cursor:
-#         query = f"select * from owner_pokemon where owner_name=\"{trainer}\" and pokemon_id = {id}"
-#         cursor.execute(query)
-#         result = cursor.fetchone()
-#         return True if result else False
+def get_types(pokemon_name):
+    with connection.cursor() as cursor:
+        query = f"select type_name from pokemon_type where pokemon_id = (select id from pokemon where name = \'{pokemon_name}\')"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return [x['type_name'] for x in result]
 
 
 def get_pokemon_id(name):
