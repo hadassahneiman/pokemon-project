@@ -1,3 +1,6 @@
+DROP Database pokemon;
+CREATE DATABASE pokemon;
+
 USE pokemon;
 
 CREATE TABLE owner (
@@ -5,18 +8,18 @@ CREATE TABLE owner (
     town VARCHAR(20)
 );
 
-CREATE TABLE type (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(20)
-);
-
 CREATE TABLE pokemon (
     id INT PRIMARY KEY,
     name VARCHAR(20),
-    type_id INT,
     height INT,
-    weight INT,
-    FOREIGN KEY(type_id) REFERENCES type(id)
+    weight INT
+);
+
+CREATE TABLE  pokemon_type (
+    pokemon_id INT,
+    type_name VARCHAR(20),
+    PRIMARY KEY(type_name, pokemon_id),
+    FOREIGN KEY(pokemon_id) REFERENCES pokemon(id)
 );
 
 CREATE TABLE owner_pokemon (
@@ -26,5 +29,6 @@ CREATE TABLE owner_pokemon (
     FOREIGN KEY(owner_name) REFERENCES owner(name),
     FOREIGN key(pokemon_id) REFERENCES pokemon(id)
 );
+
 
 
