@@ -14,17 +14,6 @@ if connection.open:
     print("the connection is opened")
 
 
-def find_id_type(type_name):
-    id = None
-    with connection.cursor() as cursor:
-        query = f"select id from type where name=\"{type_name}\""
-        cursor.execute(query)
-        result = cursor.fetchone()
-        if result:
-            id = result.get('id')
-    return id
-
-
 def open_file(file):
     try:
         with open("pokemon_data.json") as file:
@@ -40,6 +29,22 @@ def is_owner(name):
         cursor.execute(query)
         result = cursor.fetchone()
         return True if result else False
+
+
+# def is_owner_pokemon(trainer, id):
+#     with connection.cursor() as cursor:
+#         query = f"select * from owner_pokemon where owner_name=\"{trainer}\" and pokemon_id = {id}"
+#         cursor.execute(query)
+#         result = cursor.fetchone()
+#         return True if result else False
+
+
+def get_pokemon_id(name):
+    with connection.cursor() as cursor:
+        query = f"select id from pokemon where name=\"{name}\""
+        cursor.execute(query)
+        result = cursor.fetchone()
+        return result['id'] if result else None
 
 
 def add_owner(name, town):
@@ -64,32 +69,28 @@ def insert_owners(pokemon_id, owners):
         insert_owner_pokemon(owner['name'], pokemon_id)
 
 
+def insert_type(pokemon_id, type_name):
+    with connection.cursor() as cursor:
+        query = f'insert into pokemon_type values ({pokemon_id}, \'{type_name}\')'
+        cursor.execute(query)
+        connection.commit()
+
+
+def add_pokemon(pokemon):
+    with connection.cursor() as cursor:
+        query = f'insert into pokemon values ({pokemon["id"]}, \"{pokemon["name"]}\", {pokemon["height"]}, {pokemon["weight"]})'
+        cursor.execute(query)
+        connection.commit()
+
+
 def insert_data():
     pokemon_data = open_file("pokemon_data.json")
 
     for pokemon in pokemon_data:
-        type_id = find_id_type(pokemon['type'])
-
-        if type_id:
-            with connection.cursor() as cursor:
-                query = f'insert into pokemon values ({pokemon["id"]}, \"{pokemon["name"]}\", {type_id}, {pokemon["height"]}, {pokemon["weight"]})'
-                cursor.execute(query)
-                connection.commit()
-        else: print("Wrong type")
-
+        add_pokemon(pokemon)
+        insert_type(pokemon['id'], pokemon['type'])
         insert_owners(pokemon['id'], pokemon['ownedBy'])
         
-        
-def insert_types():
-    types = ["Normal", "Fire", "Water", "Grass", "Flying", "Fighting", "Poison", "Electric", "Ground", "Rock", "Psychic", "Ice", "Bug", "Ghost", "Steel", "Dragon", "Dark", "Fairy"]
-    for type in types:   
-        with connection.cursor() as cursor:    
-            query = f'insert into type values (null, \"{type}\")' 
-            cursor.execute(query)
-            connection.commit()
-
-
 
 if __name__ == '__main__':
-    # insert_types()
     insert_data()
