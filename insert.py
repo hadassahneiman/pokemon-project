@@ -34,36 +34,34 @@ def open_file(file):
         print("error in opening file")
 
 
-def get_owner_id(name, town):
+def is_owner(name):
     with connection.cursor() as cursor:
-        query = f"select id from owner where name=\"{name}\" and town=\"{town}\""
+        query = f"select name from owner where name=\"{name}\""
         cursor.execute(query)
         result = cursor.fetchone()
-        return result['id'] if result else None
+        return True if result else False
 
 
 def add_owner(name, town):
     with connection.cursor() as cursor:
-        query = f"insert into owner values (null, \"{name}\", \"{town}\")"
+        query = f"insert into owner values (\"{name}\", \"{town}\")"
         cursor.execute(query)
         connection.commit()
 
 
-def insert_owner_pokemon(owner_id, pokemon_id):
+def insert_owner_pokemon(owner_name, pokemon_id):
      with connection.cursor() as cursor:
-        query = f"insert into owner_pokemon values ({owner_id}, {pokemon_id})"
+        query = f"insert into owner_pokemon values (\'{owner_name}\', {pokemon_id})"
         cursor.execute(query)
         connection.commit()
 
 
 def insert_owners(pokemon_id, owners):
     for owner in owners:
-        id = get_owner_id(owner['name'], owner['town'])
-
-        if not id:
+        if not is_owner(owner['name']):
             add_owner(owner['name'], owner['town'])
 
-        insert_owner_pokemon(get_owner_id(owner['name'], owner['town']), pokemon_id)
+        insert_owner_pokemon(owner['name'], pokemon_id)
 
 
 def insert_data():
@@ -71,27 +69,27 @@ def insert_data():
 
     for pokemon in pokemon_data:
         type_id = find_id_type(pokemon['type'])
+
         if type_id:
             with connection.cursor() as cursor:
                 query = f'insert into pokemon values ({pokemon["id"]}, \"{pokemon["name"]}\", {type_id}, {pokemon["height"]}, {pokemon["weight"]})'
                 cursor.execute(query)
                 connection.commit()
+        else: print("Wrong type")
+
         insert_owners(pokemon['id'], pokemon['ownedBy'])
         
         
 def insert_types():
     types = ["Normal", "Fire", "Water", "Grass", "Flying", "Fighting", "Poison", "Electric", "Ground", "Rock", "Psychic", "Ice", "Bug", "Ghost", "Steel", "Dragon", "Dark", "Fairy"]
-    for type in types: 
-        try:    
-            with connection.cursor() as cursor:    
-                query = f'insert into type values (null, \"{type}\")' 
-                cursor.execute(query)
-                connection.commit()
+    for type in types:   
+        with connection.cursor() as cursor:    
+            query = f'insert into type values (null, \"{type}\")' 
+            cursor.execute(query)
+            connection.commit()
 
-        except:
-            print("DB error")
 
 
 if __name__ == '__main__':
-    insert_types()
+    # insert_types()
     insert_data()

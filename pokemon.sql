@@ -1,8 +1,7 @@
 USE pokemon;
 
 CREATE TABLE owner (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(20),
+    name VARCHAR(20) PRIMARY KEY,
     town VARCHAR(20)
 );
 
@@ -12,7 +11,7 @@ CREATE TABLE type (
 );
 
 CREATE TABLE pokemon (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT PRIMARY KEY,
     name VARCHAR(20),
     type_id INT,
     height INT,
@@ -21,10 +20,11 @@ CREATE TABLE pokemon (
 );
 
 CREATE TABLE owner_pokemon (
-    owner_id INT,
+    owner_name VARCHAR(20),
     pokemon_id INT,
-    PRIMARY KEY(owner_id, pokemon_id),
-    FOREIGN KEY(owner_id) REFERENCES owner(id),
+    PRIMARY KEY(owner_name, pokemon_id),
+    FOREIGN KEY(owner_name) REFERENCES owner(name),
     FOREIGN key(pokemon_id) REFERENCES pokemon(id)
 );
+
 

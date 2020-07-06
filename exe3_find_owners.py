@@ -14,15 +14,12 @@ if connection.open:
 
 
 def find_owners(name):
-    try:
-        with connection.cursor() as cursor:
-            query = f"SELECT distinct o.name from owner o join pokemon p join owner_pokemon op ON o.id = op.owner_id and p.id = op.pokemon_id WHERE p.name = \"{name}\""
-            cursor.execute(query)
-            res = cursor.fetchall()
-            return [x['name'] for x in res]
+    with connection.cursor() as cursor:
+        query = f"SELECT distinct op.owner_name from pokemon p join owner_pokemon op ON p.id = op.pokemon_id WHERE p.name = \"{name}\""
+        cursor.execute(query)
+        res = cursor.fetchall()
+        return [x['owner_name'] for x in res]
 
-    except:
-        print("DB error")
 
 
 if __name__ == '__main__':
