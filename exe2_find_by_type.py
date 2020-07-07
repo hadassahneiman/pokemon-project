@@ -16,13 +16,13 @@ if connection.open:
 def find_by_type(type_name):
     try:
         with connection.cursor() as cursor:
-            query = f"select p.name from pokemon p join type t on p.type_id = t.id where t.name=\'{type_name}\'"
+            query = f"select p.name from pokemon p join pokemon_type pt on pt.pokemon_id = p.id where pt.type_name=\'{type_name}\'"
             cursor.execute(query)
             res = cursor.fetchall()
             return [x['name'] for x in res]
             
-    except:
-        print("DB error")
+    except Exception as e:
+        print("DB error", e)
 
 
 if __name__ == '__main__':

@@ -19,8 +19,8 @@ def find_heaviest():
             query = "select name from pokemon where weight = (select max(weight) from pokemon)"
             cursor.execute(query)
             return cursor.fetchone()['name']
-    except:
-        print('DB error')
+    except Exception as e:
+        print('DB error', e)
 
 
 if __name__ == '__main__':
