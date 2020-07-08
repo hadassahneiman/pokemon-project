@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokemon links</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<header>
+
+</header>
+<body>
+
+    <header>
+        <img src="pokemon_logo.jpg" class="center">
+    </header>
+        
+
+    <h1>Read more:</h1>
+     <ul class = "nav">
+        <li><a href="https://bulbapedia.bulbagarden.net/wiki/Main_Page">Bulbapedia</a>
+        <li><a href="https://en.wikipedia.org/wiki/Pok%C3%A9mon">Wikipedia Pokemon</a>
+        <li><a href="https://en.wikipedia.org/wiki/Pok%C3%A9mon_(video_game_series)">Wikpedia video game series</a>
+    </ul>
+
+  <footer class = "footer">
+    <div class="navbar" id="myNavbar">
+        <a href="home_page.html">Home</a>
+        <a href="view_pokemon.html">View picture</a>
+        <a href="evolve.html">Evolve Pokemon</a>
+        <a href="links.html" class="active">Links</a>
+        <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+      </div>
+
+      <script>
+        function myFunction() {
+          var x = document.getElementById("myNavbar");
+          if (x.className === "navbar") {
+            x.className += " responsive";
+          } else {
+            x.className = "navbar";
+          }
+        }
+        </script>
+  </footer>
+    
+    
+</body>
+</html>
